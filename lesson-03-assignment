@@ -1,0 +1,179 @@
+1.- What tables do you need to add? Decide on table names and their associations to each other and any existing tables/models.
+    We need a table to store information about the topics. This table has to have an id, a topic name and a topic description. The table name will be topics and the model name will be Topic.
+    We need a join table to associate topics and lesson. This table has to have an id, a reference to a topic and also a reference to a lesson. The table name will be lesson_topics and the model name will be LessonTopic.
+2.- What columns are necessary for the associations you decided on?
+    We need the id of the topic and the id of the lesson.
+3.- What other columns (if any) need to be included on the tables? What other data needs to be stored?
+    For the topics table we need a title and a description.
+    For the join table we only need the topic_id and the lesson_id
+4.- Write out each table's name and column names with data types.
+    Table: topics
+    Model: Topic
+    Columns:
+    id - number
+    title - string
+    description - string
+
+    Table: lesson_topics
+    Model: LessonTopic
+    Columns:
+    id - number
+    lesson_id - number
+    topic_id - number
+5.- Determine the generator command you'll need to create the migration file and run the command to generate the empty migration file. Start with just the topics migration. (Hint: your filename should be create_topics)
+
+amb@ctd1:~/ctdapp$ bin/rails generate migration create_topics
+      invoke  active_record
+      create    db/migrate/20250820172919_create_topics.rb
+
+6.- Inside the create_table block in the migration file, add the appropriate columns and datatypes.
+amb@ctd1:~/ctdapp$ cat db/migrate/20250820172919_create_topics.rb
+class CreateTopics < ActiveRecord::Migration[8.0]
+  def change
+    create_table :topics do |t|
+      t.string :title
+      t.string :description
+
+      t.timestamps
+    end
+  end
+end
+
+7.- Run the migration with bin/rails db:migrate
+amb@ctd1:~/ctdapp$ bin/rails db:migrate
+== 20250820172919 CreateTopics: migrating =====================================
+-- create_table(:topics)
+   -> 0.0030s
+== 20250820172919 CreateTopics: migrated (0.0033s) ============================
+
+
+8.- Add the Topic model before moving on.
+
+amb@ctd1:~/ctdapp/app/models$ cat topic.rb
+
+class Topic < ApplicationRecord
+end
+
+9.- Now determine the generator command you'll need to create the migration file for the join table. Don't forget that it should begin with create_ and be followed by the table name.
+
+amb@ctd1:~/ctdapp$ bin/rails generate migration create_lesson_topics
+      invoke  active_record
+      create    db/migrate/20250820180520_create_lesson_topics.rb
+amb@ctd1:~/ctdapp$ 
+
+
+10.- Inside the create_table block, add associations to topics and lessons with t.references :topic and t.references :lesson
+
+amb@ctd1:~/ctdapp/db/migrate$ cat 20250820180520_create_lesson_topics.rb
+class CreateLessonTopics < ActiveRecord::Migration[8.0]
+  def change
+    create_table :lesson_topics do |t|
+      t.references :topic
+      t.references :lesson
+      
+      t.timestamps
+    end
+  end
+end
+
+
+11.- Run the migration.
+
+amb@ctd1:~/ctdapp$ bin/rails db:migrate
+== 20250820180520 CreateLessonTopics: migrating ===============================
+-- create_table(:lesson_topics)
+   -> 0.0037s
+== 20250820180520 CreateLessonTopics: migrated (0.0038s) ======================
+
+
+12.- If the migration run was successful, create the model for your join table (be sure the name matches Rails conventions).
+
+amb@ctd1:~/ctdapp/app/models$ cat lesson_topic.rb 
+class LessonTopic < ApplicationRecord
+  belongs_to :lesson
+  belongs_to :topic
+
+  has_many :topics
+  has_many :lessons
+end
+
+
+13.- Open the console and test your new models by creating the topics above and adding them to some lessons.
+
+doc-rails(dev)> Topic.all
+  Topic Load (2.4ms)  SELECT "topics".* FROM "topics" /* loading for pp */ LIMIT 11 /*application='DocRails'*/
+=> 
+[#<Topic:0x00007c1d56d6b7e0
+  id: 1,
+  title: "SQL",
+  description: "SQL (Structured Query Language) is a standard lang...",
+  created_at: "2025-08-20 19:31:14.093045000 +0000",
+  updated_at: "2025-08-20 19:31:14.093045000 +0000">,
+ #<Topic:0x00007c1d56d6b6a0
+  id: 2,
+  title: "Data Modeling",
+  description: "The primary purpose of data modeling is to create ...",
+  created_at: "2025-08-20 19:31:14.100782000 +0000",
+  updated_at: "2025-08-20 19:31:14.100782000 +0000">,
+ #<Topic:0x00007c1d56d6b560
+  id: 3,
+  title: "JavaScript",
+  description: "JavaScript is a versatile programming language pri...",
+  created_at: "2025-08-20 19:31:14.102563000 +0000",
+  updated_at: "2025-08-20 19:31:14.102563000 +0000">,
+ #<Topic:0x00007c1d56d6b420
+  id: 4,
+  title: "CSS",
+  description: "CSS, or Cascading Style Sheets, is a stylesheet la...",
+  created_at: "2025-08-20 19:31:14.103842000 +0000",
+  updated_at: "2025-08-20 19:31:14.103842000 +0000">,
+ #<Topic:0x00007c1d56d6b2e0
+  id: 5,
+  title: "Automated Testing",
+  description: "The process of using specialized software tools an...",
+  created_at: "2025-08-20 19:31:14.104937000 +0000",
+  updated_at: "2025-08-20 19:31:14.104937000 +0000">,
+ #<Topic:0x00007c1d56d6b1a0
+  id: 6,
+  title: "Debugging",
+  description: "The systematic process of identifying, analyzing, ...",
+  created_at: "2025-08-20 19:31:14.106087000 +0000",
+  updated_at: "2025-08-20 19:31:14.106087000 +0000">,
+ #<Topic:0x00007c1d56d6b060
+  id: 7,
+  title: "Web Request Cycle",
+  description: "This cycle forms the basis of how web pages are de...",
+  created_at: "2025-08-20 19:31:14.107941000 +0000",
+  updated_at: "2025-08-20 19:31:14.107941000 +0000">,
+ #<Topic:0x00007c1d56d6af20
+  id: 8,
+  title: "HTTP",
+  description: "It's a protocol that enables the transfer of hyper...",
+  created_at: "2025-08-20 19:31:14.109248000 +0000",
+  updated_at: "2025-08-20 19:31:14.109248000 +0000">]
+
+
+doc-rails(dev)> LessonTopic.all
+  LessonTopic Load (2.9ms)  SELECT "lesson_topics".* FROM "lesson_topics" /* loading for pp */ LIMIT 11 /*application='DocRails'*/
+=> 
+[#<LessonTopic:0x00007c1d56a78d58
+  id: 1,
+  topic_id: 4,
+  lesson_id: 61,
+  created_at: "2025-08-20 21:32:42.738294000 +0000",
+  updated_at: "2025-08-20 21:32:42.738294000 +0000">,
+ #<LessonTopic:0x00007c1d56a78c18
+  id: 2,
+  topic_id: 2,
+  lesson_id: 181,
+  created_at: "2025-08-20 21:33:06.750076000 +0000",
+  updated_at: "2025-08-20 21:33:06.750076000 +0000">,
+ #<LessonTopic:0x00007c1d56a78ad8
+  id: 3,
+  topic_id: 7,
+  lesson_id: 251,
+  created_at: "2025-08-20 21:33:27.338291000 +0000",
+  updated_at: "2025-08-20 21:33:27.338291000 +0000">]
+
+
+

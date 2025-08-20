@@ -3,3 +3,6 @@ vendor
 .DS_Store
 log
 storage
+db/migrate/20250819201102_create_submissions.rb~
+db/migrate/20250820172919_create_topics.rb~
+db/migrate/20250820180520_create_lesson_topics.rb~

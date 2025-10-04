@@ -100,4 +100,6 @@ You can also run the tests in a file by passing the filename. And you can restri
 
 ```
 bundle exec rspec spec/models/course_spec.rb:36
-```
+
+...
+

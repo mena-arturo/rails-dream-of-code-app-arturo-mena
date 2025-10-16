@@ -26,7 +26,32 @@ RSpec.describe Course, type: :model do
     Course.create(coding_class: coding_class,
                   trimester: trimester)
   }
-    
+
+  # Added to test Extra Challenge question lesson-05
+
+  # Adding a second coding class to test the is_past_application_deadline method
+  let(:coding_class2) { 
+    CodingClass.create(title: 'Test Class2')
+  }
+
+  # Adding a second trimester to test the is_past_application_deadline method
+  let(:trimester2) { 
+    Trimester.create(
+      year: '2025',
+      term: 'Fall',
+      start_date: '2026-11-01',
+      end_date: '2026-03-31',
+      application_deadline: '2025-10-20'
+    )
+  }
+
+  # Adding a second course to test the is_past_application_deadline method
+
+  let(:course2) {
+    Course.create(coding_class: coding_class2,
+                  trimester: trimester2)
+  }
+  
   # We define a "describe block" for each method or set of behaviors we're testing
   describe 'validations' do
     it 'is valid when both coding_class and trimester are present' do
@@ -44,7 +69,7 @@ RSpec.describe Course, type: :model do
     end
   end
 
-  describe '.student_name_list', skip: true do
+  describe '.student_name_list' do
     # First, we'll write a test that expects the method to exist
     # for an instance of a course
     it 'exists for a course' do
@@ -101,7 +126,7 @@ RSpec.describe Course, type: :model do
     end
   end
 
-  describe '.student_email_list', skip: true do
+  describe '.student_email_list' do
     it 'exists for a course' do
       expect { course.student_email_list }.not_to raise_error(NoMethodError)
     end
@@ -148,5 +173,55 @@ RSpec.describe Course, type: :model do
       end
     end
   end
+
+  # Added to test Extra Challenge question lesson-05
+    describe '.is_past_application_deadline' do
+    it 'exists for an enrollment' do
+      expect { enrollment.is_past_application_deadline }.not_to raise_error(NoMethodError)
+    end
+
+    context 'when a student has enrolled before or at the application deadline' do
+      # Create student records with dummy data
+      let(:enrolled_student_1) {
+        Student.create!(
+          first_name: 'Student',
+          last_name: 'One', 
+          email: 'studentone@example.com'
+        )
+      }
+
+      # Create enrollment records for the course
+   
+        let(:enrollment_1){
+          Enrollment.create!(student: enrolled_student_1, course: course2)
+        }
+   
+     
+      it 'returns a false value' do
+          expect(enrollment_1.is_past_application_deadline).to eq(false)
+      end
+    end
+    context 'when a student has enrolled after the application deadline' do
+          # Create student records with dummy data
+      let(:enrolled_student_2) {
+        Student.create!(
+          first_name: 'Student',
+          last_name: 'Two', 
+          email: 'studenttwo@example.com'
+        )
+      }
+
+      # Create enrollment records for the course
+        let(:enrollment_2){
+          Enrollment.create!(student: enrolled_student_2, course: course)
+        }
+
+
+      it 'returns a true value' do
+          expect(enrollment_2.is_past_application_deadline).to eq(true)
+        end
+      end
+    end
+  # Ends extra challenge lesson-05 <----------------------------------
 end
 

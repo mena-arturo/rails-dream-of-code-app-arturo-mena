@@ -1,10 +1,18 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @course %>
+<%# Since this file was already created, I'm recycling it. 
+    I just replaced the code with the instructions required 
+    to answer lesson-07 QUESTION 2
+%>
 
-<div>
-  <%= link_to "Edit this course", edit_course_path(@course) %> |
-  <%= link_to "Back to courses", courses_path %>
-
-  <%= button_to "Destroy this course", @course, method: :delete %>
-</div>
+<p><b>Coding class:</b> <%= "#{@course.coding_class.title}" %></p>
+<p><b>Enrolled students</b><p>
+<ul>
+ <% if @course.student_name_list.any?%>
+   <% @course.student_name_list.each do |name|%>
+      <li><%="#{@course.coding_class.id} #{name}"%></li>
+   <% end %>
+</ul>
+  <% else %>
+  <p>This class have no enrolled students at this time</p>
+ <% end %>
